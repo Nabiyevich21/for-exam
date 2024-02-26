@@ -20,7 +20,7 @@ singUP.addEventListener("submit", async (e) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        number: inputNumber.value,
+        phone: inputNumber.value,
         password: inputPassword.value,
       }),
     });
@@ -50,7 +50,7 @@ SingIN.addEventListener("submit", async (event) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        number: inputNumber.value,
+        phone: inputNumber.value,
         password: inputPassword.value,
       }),
     });
