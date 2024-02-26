@@ -1,26 +1,30 @@
 //* get Html content
 const singUP = document.getElementById("singUP");
 const SingIN = document.getElementById("SingIN");
+
 // const inputUsername = document.querySelector("#input__username");
 // const inputPassword = document.querySelector("#input__password");
 
 //* get Html content with username and password
 singUP.addEventListener("submit", async (e) => {
   e.preventDefault();
-  let inputUsername = e.target[0];
+  let inputNumber = e.target[0];
   let inputPassword = e.target[1];
+  //   console.log(inputNumber);
+  //   console.log(inputPassword);
 
   try {
-    const resEl = await fetch("https://todo-for-n92.cyclic.app/user/register", {
+    const resEl = await fetch("https://bd.minimatch.uz/users", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        username: inputUsername.value,
+        number: inputNumber.value,
         password: inputPassword.value,
       }),
     });
+    console.log(resEl);
     if (!resEl.ok) {
       throw new Error("Error on registration request");
     }
@@ -37,22 +41,20 @@ singUP.addEventListener("submit", async (e) => {
 //* get login
 SingIN.addEventListener("submit", async (event) => {
   event.preventDefault();
-  let inputUsername = event.target[0];
+  let inputNumber = event.target[0];
   let inputPassword = event.target[1];
   try {
-    const resELLogin = await fetch(
-      "https://todo-for-n92.cyclic.app/user/login",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username: inputUsername.value,
-          password: inputPassword.value,
-        }),
-      }
-    );
+    const resELLogin = await fetch("https://bd.minimatch.uz/auth/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        number: inputNumber.value,
+        password: inputPassword.value,
+      }),
+    });
+    console.log(resELLogin);
     if (!resELLogin.ok) {
       throw new Error("Error on login request");
     }
