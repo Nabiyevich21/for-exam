@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Authentication</title>
+    <link rel="stylesheet" href="./css/style.css" />
+  </head>
+  <body>
+    <section class="wrapper">
+      <div class="form signup">
+        <header>Signup</header>
+        <form id="singUP">
+          <br />
+          <br />
+          <input
+            id="input__username"
+            type="text"
+            placeholder="Username"
+            required
+          />
+          <input
+            id="input__password"
+            type="password"
+            placeholder="Password"
+            required
+          />
+          <button class="btn">Sing Up</button>
+        </form>
+      </div>
+
+      <div class="form login">
+        <header>Login</header>
+        <form id="SingIN">
+          <input
+            id="input__email"
+            type="text"
+            placeholder="Username"
+            required
+          />
+          <input
+            id="input__password"
+            type="password"
+            placeholder="Password"
+            required
+          />
+          <a href="#">Forgot password?</a>
+          <button class="btn">Sing In</button>
+        </form>
+      </div>
+
+      <script>
+        const wrapper = document.querySelector(".wrapper"),
+          signupHeader = document.querySelector(".signup header"),
+          loginHeader = document.querySelector(".login header");
+
+        loginHeader.addEventListener("click", () => {
+          wrapper.classList.add("active");
+        });
+        signupHeader.addEventListener("click", () => {
+          wrapper.classList.remove("active");
+        });
+      </script>
+    </section>
+    <script src="./js/auth.js"></script>
+  </body>
+</html>
