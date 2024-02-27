@@ -61,6 +61,32 @@ async function deleteElements(id) {
     console.log(error);
   }
 }
+//* ----------------------------------------------------------------
+//! edit
+async function editElement(id) {
+  try {
+    const response = await fetch(`https://bd.minimatch.uz/products/${id}`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        name: prompt("Product Name", ""),
+        price: prompt("Product price", ""),
+        description: prompt("product description", ""),
+        images: prompt("product images", ""),
+      }),
+    });
+    if (!response.ok) {
+      throw new Error("Error creating product");
+    }
+    const res = await response.json();
+    console.log(res);
+  } catch {
+    console.log(error);
+  }
+}
 
 const FormElement = document.querySelector("#FormELinput");
 const ProductsElement = document.querySelector(".Products");
@@ -135,7 +161,7 @@ async function renderProducts() {
           <i class="fa-solid fa-trash"></i>
           Remove basket
         </button>
-        <button class="btn btn-warning" data-index="${_id}">
+        <button class="btn btn-warning" onclick="editElement('${_id}')">
           <i class="fa-solid fa-pen-to-square"></i>
           Edit basket
         </button>
