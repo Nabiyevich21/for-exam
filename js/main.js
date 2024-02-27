@@ -143,4 +143,7 @@ function totalClick(clickCount) {
 
   localStorage.setItem("products", JSON.stringify(products));
 }
-8;
+function logOut() {
+  localStorage.removeItem("token");
+  window.location.href = "../auth.html";
+}
