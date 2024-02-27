@@ -8,8 +8,8 @@ const SingIN = document.getElementById("SingIN");
 //* get Html content with username and password
 singUP.addEventListener("submit", async (e) => {
   e.preventDefault();
-  let inputNumber = e.target[0];
-  let inputPassword = e.target[1];
+  let inputNumber = e.target[0].value;
+  let inputPassword = e.target[1].value;
   //   console.log(inputNumber);
   //   console.log(inputPassword);
 
@@ -20,8 +20,8 @@ singUP.addEventListener("submit", async (e) => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        phone: inputNumber.value,
-        password: inputPassword.value,
+        phone: inputNumber,
+        password: inputPassword,
       }),
     });
     console.log(resEl);

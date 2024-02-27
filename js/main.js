@@ -2,46 +2,82 @@ const token = localStorage.getItem("token");
 if (!token) {
   window.location.href = "../auth.html";
 }
+//********************************Get Products********************************
+async function getProducts() {
+  try {
+    const response = await fetch("https://bd.minimatch.uz/products", {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Error creating product");
+    }
+    const res = await response.json();
+    return res;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
 
 const FormElement = document.querySelector("#FormELinput");
 const ProductsElement = document.querySelector(".Products");
 const modal_body = document.querySelector(".modal-body");
 
 const products = JSON.parse(localStorage.getItem("products")) || [];
-FormElement.addEventListener("submit", (e) => {
+FormElement.addEventListener("submit", async (e) => {
   e.preventDefault();
 
   let imgEL = e.target[0].value;
   let nameEL = e.target[1].value;
-  let priceEL = e.target[2].value;
-  let id = products.length;
-  let isBasket = false;
+  let description = e.target[2].value;
+  let priceEL = Number(e.target[3].value);
 
   const product = {
-    img: imgEL,
     name: nameEL,
+    images: [imgEL],
     price: priceEL,
-    id: id,
-    isBasket: isBasket,
+    description,
   };
-  products.push(product);
-  localStorage.setItem("products", JSON.stringify(products));
-  // console.log(localStorage.setItem("products", JSON.stringify(products)));
 
-  renderProducts(products); //! Yangi mahsulot qo'shilganda ekranga chiqarish
+  try {
+    const response = await fetch("https://bd.minimatch.uz/products", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify(product),
+    });
+    if (!response.ok) {
+      throw new Error("Error creating product");
+    }
+    const res = await response.json();
+
+    if (res) {
+      alert("success added product");
+    } else {
+      alert("error added product");
+    }
+  } catch (error) {
+    console.log(error);
+  }
+  // renderProducts(products); //! Yangi mahsulot qo'shilganda ekranga chiqarish
   FormElement.reset();
 });
 
-function renderProducts(data) {
+async function renderProducts() {
   ProductsElement.innerHTML = ""; //! HTML ni tozalash
-  modal_body.innerHTML = ""; //! HTML ni tozalash
+
+  const data = await getProducts();
 
   data.forEach((productEl) => {
-    const { img, name, price, id, isBasket } = productEl;
+    const { images, name, price, _id } = productEl;
 
     let template = `
     <div class="products__wrapper">
-      <img src="${img}" alt="${name}" />
+      <img src="${images}" alt="${name}" />
       <div class="products__contents">
         <h1>${name}</h1>
         <hr />
@@ -58,28 +94,21 @@ function renderProducts(data) {
         </button>
       </div>
         <hr />
-        <button class="btn btn-success" onclick='addProduct("${id}")'>
+        <button class="btn btn-success" onclick='addProduct("${_id}")'>
           <i class="fa-solid fa-plus"></i>
           Add basket
         </button>
-        <button class="btn btn-danger" data-index="${products.indexOf(
-          productEl
-        )}">
+        <button class="btn btn-danger" data-index="${_id}">
           <i class="fa-solid fa-trash"></i>
           Remove basket
         </button>
-        <button class="btn btn-warning" data-index="${products.indexOf(
-          productEl
-        )}">
+        <button class="btn btn-warning" data-index="${_id}">
           <i class="fa-solid fa-pen-to-square"></i>
           Edit basket
         </button>
       </div>
     </div>
     `;
-    if (productEl.isBasket) {
-      modal_body.innerHTML += template; //! Yangi mahsulotlarni qo'shish
-    }
 
     ProductsElement.innerHTML += template;
   });
@@ -147,3 +176,5 @@ function logOut() {
   localStorage.removeItem("token");
   window.location.href = "../auth.html";
 }
+
+// =================================================================
