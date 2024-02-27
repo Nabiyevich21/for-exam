@@ -20,6 +20,47 @@ async function getProducts() {
     console.log(error.message);
   }
 }
+//* ----------------------------------------------------------------
+
+//! add basket
+async function getOneProduct(id) {
+  try {
+    const response = await fetch(`https://bd.minimatch.uz/products/${id}`, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Error creating product");
+    }
+    const res = await response.json();
+    return res;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
+//* ----------------------------------------------------------------
+//! delete
+async function deleteElements(id) {
+  try {
+    const response = await fetch(`https://bd.minimatch.uz/products/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error("Error creating product");
+    }
+    const res = await response.json();
+    console.log(res);
+  } catch {
+    console.log(error);
+  }
+}
 
 const FormElement = document.querySelector("#FormELinput");
 const ProductsElement = document.querySelector(".Products");
@@ -71,34 +112,26 @@ async function renderProducts() {
   ProductsElement.innerHTML = ""; //! HTML ni tozalash
 
   const data = await getProducts();
-
+  console.log(data);
   data.forEach((productEl) => {
-    const { images, name, price, _id } = productEl;
+    const { images, name, price, _id, description } = productEl;
 
     let template = `
     <div class="products__wrapper">
-      <img src="${images}" alt="${name}" />
+      <img src="${images}" alt="" />
       <div class="products__contents">
         <h1>${name}</h1>
         <hr />
         <br>
         <h4>Price: <span>${price}</span> $</h4>
         <br>
-        <div class="add__btn">
-        <button id="add__btn-item" onclick="totalClick(1)">
-          <i class="fa-solid fa-plus"></i>
-        </button>
-        <span id="add__span-item">0</span>
-        <button id="add__btn-item" onclick="totalClick(-1)">
-          <i class="fa-solid fa-minus"></i>
-        </button>
-      </div>
+       <h5>description: ${description}</h5>
         <hr />
-        <button class="btn btn-success" onclick='addProduct("${_id}")'>
+        <button class="btn btn-success" onclick="getOneProduct('${_id}')">
           <i class="fa-solid fa-plus"></i>
           Add basket
         </button>
-        <button class="btn btn-danger" data-index="${_id}">
+        <button class="btn btn-danger" onclick="deleteElements('${_id}')">
           <i class="fa-solid fa-trash"></i>
           Remove basket
         </button>
@@ -115,63 +148,53 @@ async function renderProducts() {
 }
 renderProducts(products);
 
-//? Delete Function
-ProductsElement.addEventListener("click", (e) => {
-  if (e.target.classList.contains("btn-danger")) {
-    const index = e.target.getAttribute("data-index");
+//* ----------------------------------------------------------------
 
-    products.splice(index, 1);
-    localStorage.setItem("products", JSON.stringify(products));
-    renderProducts(products);
-  }
-});
+// //? Delete Function
+// ProductsElement.addEventListener("click", (e) => {
+//   if (e.target.classList.contains("btn-danger")) {
+//     const index = e.target.getAttribute("data-index");
+
+//     products.splice(index, 1);
+//     localStorage.setItem("products", JSON.stringify(products));
+//     renderProducts(products);
+//   }
+// });
 
 //? Edit Function
-ProductsElement.addEventListener("click", (e) => {
-  if (e.target.classList.contains("btn-warning")) {
-    const index = e.target.getAttribute("data-index");
+// ProductsElement.addEventListener("click", (e) => {
+//   if (e.target.classList.contains("btn-warning")) {
+//     const index = e.target.getAttribute("data-index");
 
-    const ProductImg = prompt("Enter Product Images", products[index].img);
-    const ProductName = prompt("Enter product name", products[index].name);
-    const ProductPrice = prompt("Enter Product Price", products[index].price);
+//     const ProductImg = prompt("Enter Product Images", products[index].img);
+//     const ProductName = prompt("Enter product name", products[index].name);
+//     const ProductPrice = prompt("Enter Product Price", products[index].price);
 
-    products[index] = {
-      img: ProductImg,
-      name: ProductName,
-      price: ProductPrice,
-    };
+//     products[index] = {
+//       img: ProductImg,
+//       name: ProductName,
+//       price: ProductPrice,
+//     };
 
-    localStorage.setItem("products", JSON.stringify(products));
-    renderProducts(products);
-  }
-});
+//     localStorage.setItem("products", JSON.stringify(products));
+//     renderProducts(products);
+//   }
+// });
 
 //? add Product Element
-function addProduct(id) {
-  products.filter((product) => {
-    if (product.id == id) {
-      product.isBasket = true;
-      localStorage.setItem("products", JSON.stringify(products));
-      renderProducts(products);
-    }
-    return product;
-  });
-}
+// function addProduct(id) {
+//   products.filter((product) => {
+//     if (product.id == id) {
+//       product.isBasket = true;
+//       localStorage.setItem("products", JSON.stringify(products));
+//       renderProducts(products);
+//     }
+//     return product;
+//   });
+// }
 
-addProduct();
+// addProduct();
 
-//? counter products
-function totalClick(clickCount) {
-  const getBtn = document.getElementById("add__span-item");
-  const getCounter = parseInt(getBtn.innerHTML) + clickCount;
-  getBtn.innerHTML = getCounter;
-
-  if (getCounter < 0) {
-    getBtn.innerHTML = 0;
-  }
-
-  localStorage.setItem("products", JSON.stringify(products));
-}
 function logOut() {
   localStorage.removeItem("token");
   window.location.href = "../auth.html";
